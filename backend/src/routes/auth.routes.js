@@ -1,3 +1,8 @@
+/**
+ * Auth Router
+ * Các endpoint liên quan đến xác thực người dùng
+ */
+
 const router = require("express").Router();
 const { register, login } = require("../controllers/auth.controller");
 
