@@ -1,0 +1,86 @@
+-- =========================
+-- TABLE: users
+-- =========================
+CREATE TABLE users (
+    user_id SERIAL PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(150) UNIQUE NOT NULL,
+    password VARCHAR(200) NOT NULL,
+    currency VARCHAR(10) DEFAULT 'VND',
+    language VARCHAR(20) DEFAULT 'vi',
+    ai_insight_enabled BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- =========================
+-- TABLE: categories
+-- =========================
+CREATE TABLE categories (
+    category_id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(user_id) ON DELETE CASCADE,
+    name VARCHAR(100) NOT NULL,
+    type VARCHAR(20) CHECK (type IN ('income', 'expense', 'saving')),
+    icon VARCHAR(100),
+    is_default BOOLEAN DEFAULT FALSE
+);
+
+-- =========================
+-- TABLE: transactions
+-- =========================
+CREATE TABLE transactions (
+    transaction_id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(user_id) ON DELETE CASCADE,
+    type VARCHAR(20) CHECK (type IN ('income', 'expense', 'saving')) NOT NULL,
+    amount NUMERIC(15, 2) NOT NULL CHECK (amount > 0),
+    category_id INTEGER REFERENCES categories(category_id) ON DELETE SET NULL,
+    note TEXT,
+    date DATE NOT NULL,
+    ai_category VARCHAR(100),
+    is_ai_predicted BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- =========================
+-- TABLE: budgets
+-- =========================
+CREATE TABLE budgets (
+    budget_id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(user_id) ON DELETE CASCADE,
+    month INTEGER CHECK (month BETWEEN 1 AND 12),
+    year INTEGER CHECK (year >= 2000),
+    category_id INTEGER REFERENCES categories(category_id),
+    limit_amount NUMERIC(15, 2) NOT NULL,
+    spent_amount NUMERIC(15, 2) DEFAULT 0,
+    UNIQUE (user_id, month, year, category_id)
+);
+
+-- =========================
+-- TABLE: ai_insights
+-- =========================
+CREATE TABLE ai_insights (
+    insight_id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(user_id) ON DELETE CASCADE,
+    month INTEGER CHECK (month BETWEEN 1 AND 12),
+    year INTEGER CHECK (year >= 2000),
+    top_spending_categories JSONB,
+    overspending_alerts JSONB,
+    saving_recommendations JSONB,
+    trend_analysis JSONB,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (user_id, month, year)
+);
+
+-- =========================
+-- TABLE: goals
+-- =========================
+CREATE TABLE goals (
+    goal_id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(user_id) ON DELETE CASCADE,
+    title VARCHAR(200) NOT NULL,
+    target_amount NUMERIC(15, 2) NOT NULL,
+    current_amount NUMERIC(15, 2) DEFAULT 0,
+    deadline DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CHECK (current_amount <= target_amount)
+);
