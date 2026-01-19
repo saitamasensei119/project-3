@@ -9,44 +9,84 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 /**
- * Đăng ký người dùng mới
- * @route POST /api/auth/register
- * @param {string} name - Tên người dùng
- * @param {string} email - Email đăng ký
- * @param {string} password - Mật khẩu (plain text)
- * @returns {Object} Thông tin user (không bao gồm password)
+ * Đăng ký tài khoản người dùng mới
+ *
+ * - Tạo user mới trong bảng `users`
+ * - Mã hóa mật khẩu bằng bcrypt
+ * - Tự động khởi tạo các danh mục (categories) mặc định cho user
+ * - Sử dụng transaction để đảm bảo toàn vẹn dữ liệu
+ *
+ * @route   POST /api/auth/register
+ * @access  Public
+ *
+ * @param   {string} req.body.name     - Tên người dùng
+ * @param   {string} req.body.email    - Email đăng ký (duy nhất)
+ * @param   {string} req.body.password - Mật khẩu dạng plain text
+ *
+ * @returns {Object} 201 - Đăng ký thành công
+ * @returns {Object} 400 - Thiếu dữ liệu hoặc email đã tồn tại
+ * @returns {Object} 500 - Lỗi server
+ *
+ * @response {Object} user
+ * @response {number} user.user_id - ID người dùng
+ * @response {string} user.email   - Email người dùng
  */
 exports.register = async (req, res) => {
+  const client = await pool.connect();
+
   try {
     const { name, email, password } = req.body;
 
-    // Validate dữ liệu đầu vào
-    if (!email || !password)
+    if (!email || !password) {
       return res.status(400).json({ message: "Thiếu email hoặc password" });
+    }
 
-    // Hash password trước khi lưu DB để đảm bảo bảo mật
+    await client.query("BEGIN");
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const result = await pool.query(
+    const userRes = await client.query(
       `INSERT INTO users (name, email, password)
        VALUES ($1, $2, $3)
        RETURNING user_id, email`,
       [name, email, hashedPassword]
     );
 
+    const userId = userRes.rows[0].user_id;
+
+    const defaultCategories = [
+      { name: "Ăn uống", type: "expense" },
+      { name: "Đi lại", type: "expense"},
+      { name: "Lương", type: "income"},
+    ];
+
+    for (const cat of defaultCategories) {
+      await client.query(
+        `INSERT INTO categories (user_id, name, type, is_default)
+         VALUES ($1, $2, $3, true)`,
+        [userId, cat.name, cat.type]
+      );
+    }
+
+    await client.query("COMMIT");
+
     res.status(201).json({
       message: "Đăng ký thành công",
-      user: result.rows[0],
+      user: userRes.rows[0],
     });
   } catch (err) {
-    // PostgreSQL unique_violation (email đã tồn tại)
+    await client.query("ROLLBACK");
+
     if (err.code === "23505") {
       return res.status(400).json({ message: "Email đã tồn tại" });
     }
 
     res.status(500).json({ message: "Lỗi server" });
+  } finally {
+    client.release();
   }
 };
+
 
 /**
  * Đăng nhập người dùng
@@ -81,6 +121,11 @@ exports.login = async (req, res) => {
     res.json({
       message: "Đăng nhập thành công",
       token,
+      user: {
+        user_id: user.user_id,
+        name: user.name,
+        email: user.email,
+      },
     });
   } catch (err) {
     res.status(500).json({ message: "Lỗi server" });

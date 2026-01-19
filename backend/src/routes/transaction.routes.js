@@ -1,12 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const transactionController = require("../controllers/transaction.controller");
+const auth = require("../middlewares/auth.middleware");
+const controller = require("../controllers/transaction.controller");
 
-// CRUD giao dịch
-router.post("/", transactionController.createTransaction);
-router.get("/", transactionController.getTransactions);
-router.get("/:id", transactionController.getTransactionById);
-router.put("/:id", transactionController.updateTransaction);
-router.delete("/:id", transactionController.deleteTransaction);
+router.post("/", auth, controller.createTransaction);
+router.get("/", auth, controller.getTransactions);
+router.put("/:id", auth, controller.updateTransaction);
+router.delete("/:id", auth, controller.deleteTransaction);
 
 module.exports = router;

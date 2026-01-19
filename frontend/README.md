@@ -1,13 +1,71 @@
-# React + Vite
+# 💰 Quản Lý Tài Chính Cá Nhân
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Ứng dụng quản lý tài chính cá nhân với React và Node.js/Express.
 
-Currently, two official plugins are available:
+## 🚀 Tính Năng
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- ✅ **Xác Thực**: Đăng ký, đăng nhập với JWT
+- ✅ **Quản Lý Giao Dịch**: Thêm, sửa, xoá giao dịch chi tiêu/thu nhập
+- ✅ **Danh Mục**: Tạo danh mục chi tiêu/thu nhập
+- ✅ **Ngân Sách**: Đặt và theo dõi ngân sách hàng tháng
+- ✅ **Mục Tiêu Tiết Kiệm**: Lập mục tiêu tiết kiệm và theo dõi tiến độ
+- ✅ **Dashboard**: Tổng quan tài chính
 
-## React Compiler
+## 📋 Yêu Cầu
+
+- Node.js v16+
+- npm hoặc yarn
+- PostgreSQL
+
+## 🛠️ Cài Đặt
+
+### Backend
+
+```bash
+cd backend
+npm install
+npm run dev
+```
+
+Backend chạy trên: `http://localhost:5000`
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Frontend chạy trên: `http://localhost:5173`
+
+## 📁 Cấu Trúc
+
+```
+frontend/src/
+├── components/
+│   ├── TransactionForm.jsx
+│   ├── TransactionList.jsx
+│   ├── BudgetList.jsx
+│   └── GoalList.jsx
+├── pages/
+│   ├── Login.jsx
+│   ├── Register.jsx
+│   └── Dashboard.jsx
+├── services/
+│   └── api.js
+└── styles/
+    ├── Auth.css
+    ├── Dashboard.css
+    ├── Form.css
+    └── List.css
+```
+
+## 🔐 Tính Năng Bảo Mật
+
+- JWT authentication
+- Password hashing với bcrypt
+- Protected API routes
 
 The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 

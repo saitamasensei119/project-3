@@ -24,7 +24,8 @@ exports.createCategory = async (req, res) => {
 
     res.status(201).json(result.rows[0]);
   } catch (err) {
-    res.status(500).json({ message: "Lỗi tạo category" });
+    console.error("[CREATE CATEGORY ERROR]", err.message, err);
+    res.status(500).json({ message: "Lỗi tạo category: " + err.message });
   }
 };
 
@@ -37,8 +38,8 @@ exports.getCategories = async (req, res) => {
 
     const result = await pool.query(
       `SELECT * FROM categories
-       WHERE user_id = $1 OR is_default = TRUE
-       ORDER BY type`,
+WHERE user_id = $1
+ORDER BY type, is_default DESC;`,
       [userId]
     );
 
@@ -62,11 +63,14 @@ exports.updateCategory = async (req, res) => {
        SET name = $1, icon = $2
        WHERE category_id = $3
   AND user_id = $4
-  AND is_default = FALSE
+
 
        RETURNING *`,
       [name, icon, id, userId]
     );
+
+    if (!name && !icon)
+      return res.status(400).json({ message: "Không có dữ liệu cập nhật" });
 
     if (result.rows.length === 0)
       return res.status(404).json({ message: "Category không tồn tại" });
@@ -85,21 +89,37 @@ exports.deleteCategory = async (req, res) => {
     const { id } = req.params;
     const userId = req.user.user_id;
 
-    const result = await pool.query(
-      `DELETE FROM categories
-       WHERE category_id = $1
-  AND user_id = $2
-  AND is_default = FALSE
-
-       RETURNING *`,
+    // 1️⃣ Kiểm tra category
+    const checkRes = await pool.query(
+      `SELECT is_default
+       FROM categories
+       WHERE category_id = $1 AND user_id = $2`,
       [id, userId]
     );
 
-    if (result.rows.length === 0)
+    if (checkRes.rows.length === 0) {
       return res.status(404).json({ message: "Category không tồn tại" });
+    }
+
+    if (checkRes.rows[0].is_default) {
+      return res
+        .status(400)
+        .json({ message: "Không thể xoá category mặc định" });
+    }
+
+    // 2️⃣ Xoá category
+    await pool.query(
+      `DELETE FROM categories
+       WHERE category_id = $1 
+       AND user_id = $2 
+       AND is_default = FALSE`,
+      [id, userId]
+    );
 
     res.json({ message: "Đã xoá category" });
   } catch (err) {
+    console.error("[DELETE CATEGORY ERROR]", err);
     res.status(500).json({ message: "Lỗi xoá category" });
   }
 };
+
