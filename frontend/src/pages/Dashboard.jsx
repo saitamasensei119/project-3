@@ -13,6 +13,8 @@ import "../styles/Dashboard.css";
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("overview");
+  const [avatar, setAvatar] = useState(null);
+  const [showAvatarUpload, setShowAvatarUpload] = useState(false);
   const navigate = useNavigate();
   const userStr = localStorage.getItem("user");
   const user = userStr ? JSON.parse(userStr) : null;
@@ -20,6 +22,11 @@ export default function Dashboard() {
   useEffect(() => {
     if (!localStorage.getItem("token")) {
       navigate("/login");
+    }
+    // Load avatar from localStorage
+    const savedAvatar = localStorage.getItem("userAvatar");
+    if (savedAvatar) {
+      setAvatar(savedAvatar);
     }
   }, [navigate]);
 
@@ -30,14 +37,56 @@ export default function Dashboard() {
     navigate("/login", { replace: true });
   };
 
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64 = event.target.result;
+        setAvatar(base64);
+        localStorage.setItem("userAvatar", base64);
+        setShowAvatarUpload(false);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <div className="dashboard">
       <header className="dashboard-header">
-        <div className="header-left">
-          <h1>💰 Quản Lý Tài Chính</h1>
+        <div className="header-center">
+          <div className="avatar-section">
+            {avatar ? (
+              <img src={avatar} alt="Avatar" className="user-avatar" />
+            ) : (
+              <div className="avatar-placeholder">👤</div>
+            )}
+            <div className="avatar-upload-wrapper">
+              <button
+                onClick={() => setShowAvatarUpload(!showAvatarUpload)}
+                className="avatar-edit-btn"
+                title="Thay đổi avatar"
+              >
+                📷
+              </button>
+              {showAvatarUpload && (
+                <div className="avatar-upload-input">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAvatarChange}
+                    className="file-input"
+                  />
+                </div>
+              )}
+            </div>
+          </div>
         </div>
+
         <div className="header-right">
-          <span>Xin chào, {user?.name}</span>
+          <div className="user-info">
+            <span className="greeting">Xin chào, {user?.name}</span>
+          </div>
           <button onClick={handleLogout} className="btn-logout">
             Đăng Xuất
           </button>
