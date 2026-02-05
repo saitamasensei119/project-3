@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import TransactionList from "../components/TransactionList";
 import TransactionForm from "../components/TransactionForm";
@@ -7,6 +7,8 @@ import GoalList from "../components/GoalList";
 import CategoryManager from "../components/CategoryManager";
 import ExpenseByCategoryChart from "../components/ExpenseByCategoryChart";
 import IncomeVsExpenseChart from "../components/IncomeVsExpenseChart";
+import AIInsights from "../components/AIInsights";
+import { AuthContext } from "../contexts/AuthContext";
 import "../styles/Dashboard.css";
 
 export default function Dashboard() {
@@ -21,11 +23,13 @@ export default function Dashboard() {
     }
   }, [navigate]);
 
+  const { logout } = useContext(AuthContext);
+
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    navigate("/login");
+    logout(); // ❗ xóa STATE
+    navigate("/login", { replace: true });
   };
+
 
   return (
     <div className="dashboard">
@@ -47,6 +51,12 @@ export default function Dashboard() {
           onClick={() => setActiveTab("overview")}
         >
           📊 Tổng Quan
+        </button>
+        <button
+          className={`nav-btn ${activeTab === "insights" ? "active" : ""}`}
+          onClick={() => setActiveTab("insights")}
+        >
+          🧠 AI Insights
         </button>
         <button
           className={`nav-btn ${activeTab === "categories" ? "active" : ""}`}

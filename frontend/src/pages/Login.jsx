@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { authService } from "../services/api";
+import { useAuth } from "../hooks/useAuth";
 import "../styles/Auth.css";
 
 export default function Login() {
@@ -9,6 +10,7 @@ export default function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,8 +20,7 @@ export default function Login() {
     try {
       const response = await authService.login(email, password);
       if (response.token) {
-        localStorage.setItem("token", response.token);
-        localStorage.setItem("user", JSON.stringify(response.user));
+        login(response);
         navigate("/dashboard");
       } else {
         setError(response.message || "Đăng nhập thất bại");

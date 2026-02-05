@@ -205,7 +205,7 @@ export const budgetService = {
       `${API_URL}/budgets?month=${month}&year=${year}`,
       {
         headers: getHeaders(),
-      }
+      },
     );
     const data = await response.json();
     return Array.isArray(data) ? data.map(normalizeBudget) : [];
@@ -298,5 +298,80 @@ export const goalService = {
       headers: getHeaders(),
     });
     return response.json();
+  },
+};
+/**
+ * AI Insights Service
+ */
+export const aiService = {
+  getInsights: async (params = {}) => {
+    const queryParams = new URLSearchParams();
+    const now = new Date();
+
+    if (params.month) {
+      queryParams.append("month", params.month);
+    } else {
+      queryParams.append("month", now.getMonth() + 1);
+    }
+
+    if (params.year) {
+      queryParams.append("year", params.year);
+    } else {
+      queryParams.append("year", now.getFullYear());
+    }
+
+    const url = `${API_URL}/ai-insights?${queryParams.toString()}`;
+
+    const response = await fetch(url, {
+      headers: getHeaders(),
+    });
+
+    if (!response.ok) {
+      throw new Error("Lỗi lấy insights");
+    }
+
+    const data = await response.json();
+    return {
+      topSpendingCategories: data.top_spending_categories
+        ? JSON.parse(data.top_spending_categories)
+        : [],
+      overspendingAlerts: data.overspending_alerts
+        ? JSON.parse(data.overspending_alerts)
+        : [],
+      savingRecommendations: data.saving_recommendations
+        ? JSON.parse(data.saving_recommendations)
+        : [],
+      trendAnalysis: data.trend_analysis
+        ? JSON.parse(data.trend_analysis)
+        : null,
+    };
+  },
+
+  refreshInsights: async (month, year) => {
+    const response = await fetch(`${API_URL}/ai-insights/refresh`, {
+      method: "POST",
+      headers: getHeaders(),
+      body: JSON.stringify({ month, year }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Lỗi làm mới insights");
+    }
+
+    const data = await response.json();
+    return {
+      topSpendingCategories: data.top_spending_categories
+        ? JSON.parse(data.top_spending_categories)
+        : [],
+      overspendingAlerts: data.overspending_alerts
+        ? JSON.parse(data.overspending_alerts)
+        : [],
+      savingRecommendations: data.saving_recommendations
+        ? JSON.parse(data.saving_recommendations)
+        : [],
+      trendAnalysis: data.trend_analysis
+        ? JSON.parse(data.trend_analysis)
+        : null,
+    };
   },
 };

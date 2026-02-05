@@ -95,6 +95,7 @@ export default function TransactionForm() {
             >
               <option value="expense">Chi Tiêu</option>
               <option value="income">Thu Nhập</option>
+              <option value="saving">Tiết Kiệm</option>
             </select>
           </div>
 

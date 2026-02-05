@@ -101,7 +101,7 @@ export default function CategoryManager() {
             >
               <option value="expense">Chi Tiêu</option>
               <option value="income">Thu Nhập</option>
-              <option value="savings">Tiết Kiệm</option>
+              <option value="saving">Tiết Kiệm</option>
             </select>
           </div>
 
@@ -128,7 +128,7 @@ export default function CategoryManager() {
                   <span className={`badge ${c.type}`}>
                     {c.type === "income"
                       ? "Thu Nhập"
-                      : c.type === "savings"
+                      : c.type === "saving"
                       ? "Tiết Kiệm"
                       : "Chi Tiêu"}
                   </span>
