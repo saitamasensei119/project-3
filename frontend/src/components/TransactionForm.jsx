@@ -68,6 +68,14 @@ export default function TransactionForm() {
         setError("");
         // Auto dismiss success message after 3 seconds
         setTimeout(() => setSuccess(""), 3000);
+        // Notify other components (e.g., TransactionList) that a transaction was created
+        try {
+          window.dispatchEvent(
+            new CustomEvent("transactions:created", { detail: response }),
+          );
+        } catch (e) {
+          // ignore if dispatch fails
+        }
       } else {
         setError(response.message || "Tạo giao dịch thất bại");
       }

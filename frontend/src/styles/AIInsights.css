@@ -362,20 +362,56 @@
 
 /* Responsive */
 @media (max-width: 768px) {
+  .insights-container {
+    padding: 12px;
+  }
+
   .insights-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 15px;
+    padding: 15px;
+  }
+
+  .insights-header h1 {
+    font-size: 20px;
   }
 
   .month-selector {
     width: 100%;
     flex-direction: column;
+    gap: 10px;
+  }
+
+  .month-selector label {
+    font-size: 13px;
+  }
+
+  .month-selector select {
+    width: 100%;
+    padding: 8px;
+    font-size: 13px;
+  }
+
+  .btn-refresh {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .insight-section {
+    padding: 15px;
+    margin-bottom: 15px;
+  }
+
+  .insight-section h2 {
+    font-size: 16px;
+    margin-bottom: 15px;
   }
 
   .category-item {
     flex-direction: column;
     align-items: flex-start;
+    padding: 12px;
   }
 
   .category-info {
@@ -397,6 +433,68 @@
 
   .trend-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .insights-container {
+    padding: 10px;
+  }
+
+  .insights-header {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .insights-header h1 {
+    font-size: 16px;
+    margin: 0;
+  }
+
+  .month-selector {
+    gap: 8px;
+  }
+
+  .month-selector label {
+    font-size: 12px;
+  }
+
+  .month-selector select {
+    padding: 6px;
+    font-size: 12px;
+  }
+
+  .btn-refresh {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .insight-section {
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+
+  .insight-section h2 {
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+
+  .category-item {
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .rank {
+    font-size: 16px;
+    min-width: 25px;
+  }
+
+  .category-bar {
+    height: 20px;
+  }
+
+  .top-categories {
+    gap: 10px;
   }
 }
 

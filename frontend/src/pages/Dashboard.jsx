@@ -30,7 +30,6 @@ export default function Dashboard() {
     navigate("/login", { replace: true });
   };
 
-
   return (
     <div className="dashboard">
       <header className="dashboard-header">
@@ -45,52 +44,57 @@ export default function Dashboard() {
         </div>
       </header>
 
-      <nav className="dashboard-nav">
-        <button
-          className={`nav-btn ${activeTab === "overview" ? "active" : ""}`}
-          onClick={() => setActiveTab("overview")}
-        >
-          📊 Tổng Quan
-        </button>
-        <button
-          className={`nav-btn ${activeTab === "insights" ? "active" : ""}`}
-          onClick={() => setActiveTab("insights")}
-        >
-          🧠 AI Insights
-        </button>
-        <button
-          className={`nav-btn ${activeTab === "categories" ? "active" : ""}`}
-          onClick={() => setActiveTab("categories")}
-        >
-          📂 Danh Mục
-        </button>
-        <button
-          className={`nav-btn ${activeTab === "transactions" ? "active" : ""}`}
-          onClick={() => setActiveTab("transactions")}
-        >
-          💳 Giao Dịch
-        </button>
-        <button
-          className={`nav-btn ${activeTab === "budgets" ? "active" : ""}`}
-          onClick={() => setActiveTab("budgets")}
-        >
-          💼 Ngân Sách
-        </button>
-        <button
-          className={`nav-btn ${activeTab === "goals" ? "active" : ""}`}
-          onClick={() => setActiveTab("goals")}
-        >
-          🎯 Mục Tiêu
-        </button>
-      </nav>
-
       <main className="dashboard-content">
         {activeTab === "overview" && <Overview />}
+        {activeTab === "insights" && <AIInsights />}
         {activeTab === "categories" && <CategoryManager />}
         {activeTab === "transactions" && <TransactionsTab />}
         {activeTab === "budgets" && <BudgetList />}
         {activeTab === "goals" && <GoalList />}
       </main>
+
+      <nav className="dashboard-nav-bottom">
+        <button
+          className={`nav-btn-bottom ${activeTab === "overview" ? "active" : ""}`}
+          onClick={() => setActiveTab("overview")}
+          title="Tổng Quan"
+        >
+          <span className="nav-icon">📊</span>
+          <span className="nav-label">Tổng Quan</span>
+        </button>
+        <button
+          className={`nav-btn-bottom ${activeTab === "categories" ? "active" : ""}`}
+          onClick={() => setActiveTab("categories")}
+          title="Danh Mục"
+        >
+          <span className="nav-icon">📂</span>
+          <span className="nav-label">Danh Mục</span>
+        </button>
+        <button
+          className={`nav-btn-bottom ${activeTab === "transactions" ? "active" : ""}`}
+          onClick={() => setActiveTab("transactions")}
+          title="Giao Dịch"
+        >
+          <span className="nav-icon">💳</span>
+          <span className="nav-label">Giao Dịch</span>
+        </button>
+        <button
+          className={`nav-btn-bottom ${activeTab === "budgets" ? "active" : ""}`}
+          onClick={() => setActiveTab("budgets")}
+          title="Ngân Sách"
+        >
+          <span className="nav-icon">💼</span>
+          <span className="nav-label">Ngân Sách</span>
+        </button>
+        <button
+          className={`nav-btn-bottom ${activeTab === "goals" ? "active" : ""}`}
+          onClick={() => setActiveTab("goals")}
+          title="Mục Tiêu"
+        >
+          <span className="nav-icon">🎯</span>
+          <span className="nav-label">Mục Tiêu</span>
+        </button>
+      </nav>
     </div>
   );
 }
@@ -114,7 +118,7 @@ function Overview() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       const data = await res.json();

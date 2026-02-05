@@ -170,7 +170,9 @@
   margin-bottom: 15px;
   border-left: 4px solid #3a3;
   font-size: 14px;
-  animation: slideIn 0.3s ease-in, slideOut 3s ease-out 3s forwards;
+  animation:
+    slideIn 0.3s ease-in,
+    slideOut 3s ease-out 3s forwards;
 }
 
 @keyframes slideIn {
@@ -197,6 +199,138 @@
   padding: 25px;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  body {
+    padding-bottom: 70px;
+  }
+
+  .form-container {
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+
+  .form-container h2 {
+    font-size: 18px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+
+  .form-inline {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 10px;
+    margin-bottom: 15px;
+  }
+
+  .form-inline button {
+    width: 100%;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .btn-primary {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .btn-secondary,
+  .btn-delete {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+
+  .list-table {
+    font-size: 12px;
+  }
+
+  .list-table th,
+  .list-table td {
+    padding: 8px 5px;
+  }
+
+  .filter-buttons {
+    gap: 8px;
+    margin-bottom: 15px;
+  }
+
+  .filter-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .error-message,
+  .success-message {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding-bottom: 65px;
+  }
+
+  .form-container {
+    padding: 12px;
+  }
+
+  .form-container h2 {
+    font-size: 16px;
+    margin-bottom: 15px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .form-inline {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    font-size: 16px;
+    padding: 10px 8px;
+  }
+
+  .btn-primary {
+    padding: 10px 8px;
+    font-size: 13px;
+  }
+
+  .list-table {
+    font-size: 11px;
+  }
+
+  .list-table th,
+  .list-table td {
+    padding: 6px 3px;
+  }
+
+  .filter-btn {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
 }
 
 .list-header {

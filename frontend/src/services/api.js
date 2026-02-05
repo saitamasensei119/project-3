@@ -126,7 +126,13 @@ export const categoryService = {
       method: "DELETE",
       headers: getHeaders(),
     });
-    return response.json();
+    const data = await (response.status === 204
+      ? Promise.resolve(null)
+      : response.json());
+    if (!response.ok) {
+      throw new Error(data?.message || "Lỗi khi xoá danh mục");
+    }
+    return data;
   },
 };
 

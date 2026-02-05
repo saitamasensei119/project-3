@@ -2,6 +2,9 @@
 .dashboard {
   min-height: 100vh;
   background-color: #f5f7fa;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 0;
 }
 
 .dashboard-header {
@@ -12,6 +15,7 @@
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
 }
 
 .header-left h1 {
@@ -45,14 +49,10 @@
 }
 
 .dashboard-nav {
-  display: flex;
-  gap: 10px;
-  padding: 20px 30px;
-  background: white;
-  border-bottom: 1px solid #eee;
-  flex-wrap: wrap;
+  display: none;
 }
 
+/* Old nav - hidden on mobile */
 .nav-btn {
   padding: 10px 20px;
   background-color: #f0f0f0;
@@ -76,6 +76,69 @@
   padding: 30px;
   max-width: 1200px;
   margin: 0 auto;
+  flex: 1;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+/* Bottom Navigation Bar */
+.dashboard-nav-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 10px;
+  background: white;
+  border-top: 2px solid #eee;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+.nav-btn-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex: 1;
+  padding: 8px 10px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 12px;
+  color: #999;
+  transition: all 0.3s;
+}
+
+.nav-btn-bottom:hover {
+  background-color: #f0f0f0;
+  color: #667eea;
+}
+
+.nav-btn-bottom.active {
+  background-color: #f0f5ff;
+  color: #667eea;
+  font-weight: 600;
+}
+
+.nav-icon {
+  font-size: 20px;
+  display: block;
+  line-height: 1;
+}
+
+.nav-label {
+  display: block;
+  font-size: 11px;
+  text-align: center;
+  word-break: break-word;
 }
 
 /* Overview */
@@ -184,5 +247,154 @@
 @media (max-width: 1024px) {
   .charts-container {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .dashboard {
+    padding-bottom: 70px;
+  }
+
+  .dashboard-header {
+    padding: 15px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .header-left h1 {
+    font-size: 22px;
+  }
+
+  .header-right {
+    width: 100%;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .header-right span {
+    font-size: 14px;
+  }
+
+  .dashboard-content {
+    padding: 15px;
+    max-width: 100%;
+  }
+
+  .overview-cards {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .card {
+    padding: 15px;
+  }
+
+  .card h3 {
+    font-size: 12px;
+  }
+
+  .card .amount {
+    font-size: 22px;
+  }
+
+  .charts-container {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .chart-wrapper {
+    min-height: 300px;
+    padding: 15px;
+  }
+
+  .recent-transactions {
+    padding: 15px;
+    overflow-x: auto;
+  }
+
+  .list-table {
+    font-size: 12px;
+  }
+
+  .list-table th,
+  .list-table td {
+    padding: 8px 5px;
+  }
+
+  /* Bottom Navigation */
+  .dashboard-nav-bottom {
+    padding: 6px 5px;
+    gap: 0;
+  }
+
+  .nav-btn-bottom {
+    padding: 6px 5px;
+    gap: 2px;
+  }
+
+  .nav-icon {
+    font-size: 18px;
+  }
+
+  .nav-label {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard {
+    padding-bottom: 65px;
+  }
+
+  .header-left h1 {
+    font-size: 18px;
+  }
+
+  .header-right {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .header-right span {
+    font-size: 12px;
+  }
+
+  .card .amount {
+    font-size: 18px;
+  }
+
+  .list-table {
+    font-size: 11px;
+  }
+
+  .list-table th,
+  .list-table td {
+    padding: 6px 3px;
+  }
+
+  .badge {
+    font-size: 10px;
+    padding: 2px 5px;
+  }
+
+  /* Bottom Navigation - ultra small */
+  .dashboard-nav-bottom {
+    padding: 5px 3px;
+    gap: 2px;
+  }
+
+  .nav-btn-bottom {
+    padding: 4px 3px;
+    gap: 1px;
+  }
+
+  .nav-icon {
+    font-size: 16px;
+  }
+
+  .nav-label {
+    font-size: 9px;
   }
 }

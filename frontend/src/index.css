@@ -44,6 +44,61 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
+/* Mobile viewport fix */
+@media (max-width: 768px) {
+  :root {
+    font-size: 14px;
+  }
+
+  h1 {
+    font-size: 1.8em;
+  }
+
+  h2 {
+    font-size: 1.4em;
+  }
+
+  button {
+    padding: 0.5em 1em;
+    font-size: 0.9em;
+  }
+
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    font-size: 13px;
+  }
+
+  h1 {
+    font-size: 1.5em;
+  }
+
+  h2 {
+    font-size: 1.2em;
+  }
+
+  h3 {
+    font-size: 1em;
+  }
+
+  button {
+    padding: 0.5em 0.8em;
+    font-size: 0.8em;
+  }
+
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
+}
 button:hover {
   border-color: #646cff;
 }

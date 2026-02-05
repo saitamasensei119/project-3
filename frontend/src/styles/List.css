@@ -218,3 +218,120 @@
     flex: none;
   }
 }
+
+@media (max-width: 480px) {
+  .list-container {
+    padding: 12px;
+    margin-bottom: 15px;
+  }
+
+  .list-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .list-header h2 {
+    font-size: 16px;
+    margin: 0;
+  }
+
+  .list-table {
+    font-size: 11px;
+  }
+
+  .list-table th {
+    padding: 8px 5px;
+    font-size: 11px;
+  }
+
+  .list-table td {
+    padding: 6px 4px;
+  }
+
+  .budget-detail {
+    padding: 12px;
+  }
+
+  .detail-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .detail-header h2 {
+    font-size: 18px;
+    margin: 0;
+  }
+
+  .btn-back {
+    padding: 8px 12px;
+    font-size: 12px;
+    width: 100%;
+  }
+
+  .budget-info-card {
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+
+  .info-row {
+    padding: 8px 0;
+    font-size: 13px;
+  }
+
+  .info-row .label {
+    font-size: 12px;
+  }
+
+  .info-row .value {
+    font-size: 14px;
+  }
+
+  .progress-section {
+    margin-top: 15px;
+    padding-top: 15px;
+  }
+
+  .progress-label {
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+
+  .progress-bar {
+    height: 20px;
+  }
+
+  .transactions-section h3 {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+}
+
+/* Modal confirmation styles */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.confirm-modal {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 90%;
+  text-align: left;
+}
+
+.confirm-modal h3 {
+  margin: 0 0 8px 0;
+}
+
+.confirm-modal p {
+  margin: 0;
+  color: #333;
+}
