@@ -13,6 +13,7 @@ app.use("/api/transactions", require("./routes/transaction.routes"));
 app.use("/api/budgets", require("./routes/budgets.routes"));
 app.use("/api/goals", require("./routes/goal.routes"));
 app.use("/api/ai-insights", require("./routes/ai.routes"));
+app.use("/api/ocr", require("./routes/ocr.routes"));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

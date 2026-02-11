@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test OCR Số Tiền</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .upload-area {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            text-align: center;
+            margin: 10px 0;
+        }
+        .result {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        button {
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #218838;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test OCR Đọc Số Tiền từ Hóa Đơn</h1>
+    
+    <div class="test-section">
+        <h2>Upload Ảnh Hóa Đơn</h2>
+        <div class="upload-area">
+            <input type="file" id="fileInput" accept="image/*" />
+            <p>Chọn ảnh hóa đơn để test khả năng đọc số tiền</p>
+        </div>
+        
+        <button onclick="testOCR()">🔍 Test OCR</button>
+        <button onclick="clearResults()">🗑️ Xóa kết quả</button>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Đang xử lý OCR...</p>
+        </div>
+        
+        <div id="results"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>📝 Hướng dẫn test</h2>
+        <ul>
+            <li>Chọn ảnh hóa đơn có chứa số tiền rõ ràng</li>
+            <li>OCR sẽ cố gắng trích xuất: số tiền, ngày tháng, nhà cung cấp</li>
+            <li>Kiểm tra console log để xem debug thông tin</li>
+            <li>Test với các loại hóa đơn khác nhau: siêu thị, nhà hàng, cửa hàng</li>
+        </ul>
+        
+        <h3>🎯 Các pattern OCR sẽ tìm:</h3>
+        <ul>
+            <li><strong>Từ khóa:</strong> "tổng cộng", "total", "thanh toán", "số tiền", "tổng tiền"</li>
+            <li><strong>Ký hiệu:</strong> "đ", "vnd", "₫"</li>
+            <li><strong>Định dạng:</strong> 100.000đ, 100,000 VND, ₫100000</li>
+            <li><strong>Số tiền lớn nhất:</strong> Thường là tổng cộng trên hóa đơn</li>
+        </ul>
+    </div>
+
+    <script>
+        function testOCR() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Vui lòng chọn file ảnh');
+                return;
+            }
+            
+            const loading = document.getElementById('loading');
+            const results = document.getElementById('results');
+            
+            loading.style.display = 'block';
+            results.innerHTML = '';
+            
+            const formData = new FormData();
+            formData.append('invoice', file);
+            
+            fetch('http://localhost:5000/api/ocr/test', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                loading.style.display = 'none';
+                
+                if (data.success) {
+                    displayResults(data.data);
+                } else {
+                    displayError(data.error || 'OCR thất bại');
+                }
+            })
+            .catch(error => {
+                loading.style.display = 'none';
+                displayError('Lỗi kết nối: ' + error.message);
+            });
+        }
+        
+        function displayResults(data) {
+            const results = document.getElementById('results');
+            
+            let html = '<div class="result">';
+            html += '<h3>✅ Kết quả OCR:</h3>';
+            html += '<p><strong>Số tiền:</strong> ' + (data.amount ? formatCurrency(data.amount) : 'Không tìm thấy') + '</p>';
+            html += '<p><strong>Ngày:</strong> ' + (data.date || 'Không tìm thấy') + '</p>';
+            html += '<p><strong>Nhà cung cấp:</strong> ' + (data.vendor || 'Không tìm thấy') + '</p>';
+            html += '<p><strong>Mô tả:</strong> ' + (data.description || 'Không tìm thấy') + '</p>';
+            html += '<p><strong>Độ tin cậy:</strong> ' + (data.confidence ? Math.round(data.confidence * 100) + '%' : 'N/A') + '</p>';
+            html += '<p><strong>OCR Confidence:</strong> ' + (data.ocrConfidence ? Math.round(data.ocrConfidence) + '%' : 'N/A') + '</p>';
+            
+            if (data.rawText) {
+                html += '<h4>Văn bản OCR:</h4>';
+                html += '<pre style="background: #f0f0f0; padding: 10px; border-radius: 5px; max-height: 200px; overflow-y: auto;">' + data.rawText + '</pre>';
+            }
+            
+            html += '</div>';
+            results.innerHTML = html;
+        }
+        
+        function displayError(message) {
+            const results = document.getElementById('results');
+            results.innerHTML = '<div class="error"><strong>❌ Lỗi:</strong> ' + message + '</div>';
+        }
+        
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+            document.getElementById('fileInput').value = '';
+        }
+        
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            }).format(amount);
+        }
+    </script>
+</body>
+</html>

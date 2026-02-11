@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { transactionService, categoryService } from "../services/api";
+import ocrService from "../services/ocr.service";
+import ImageUpload from "./ImageUpload";
 import "../styles/Form.css";
+import "../styles/ImageUpload.css";
 
 export default function TransactionForm() {
   const [formData, setFormData] = useState({
@@ -14,6 +17,8 @@ export default function TransactionForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [showOCR, setShowOCR] = useState(false);
+  const [ocrProcessing, setOcrProcessing] = useState(false);
 
   useEffect(() => {
     loadCategories();
@@ -34,6 +39,32 @@ export default function TransactionForm() {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const handleOCRResult = (ocrData) => {
+    try {
+      // Map OCR data to form data
+      const mappedData = ocrService.mapOCRToFormData(ocrData);
+      
+      // Update form with OCR data
+      setFormData(prev => ({
+        ...prev,
+        amount: mappedData.amount || prev.amount,
+        description: mappedData.description || prev.description,
+        date: mappedData.date || prev.date,
+        type: mappedData.type || prev.type
+      }));
+
+      // Show success message
+      setSuccess(`Đã trích xuất thông tin từ hóa đơn${ocrData.confidence ? ` (độ tin cậy: ${Math.round(ocrData.confidence * 100)}%)` : ''}`);
+      setTimeout(() => setSuccess(""), 5000);
+      
+      // Hide OCR section
+      setShowOCR(false);
+    } catch (error) {
+      console.error('OCR Result Error:', error);
+      setError('Không thể xử lý kết quả OCR. Vui lòng nhập thủ công.');
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -91,6 +122,30 @@ export default function TransactionForm() {
   return (
     <div className="form-container">
       <h2>Thêm Giao Dịch Mới</h2>
+      
+      {/* OCR Section */}
+      <div className="ocr-section">
+        <div className="ocr-toggle">
+          <button
+            type="button"
+            onClick={() => setShowOCR(!showOCR)}
+            className="btn-secondary ocr-toggle-btn"
+            disabled={loading}
+          >
+            {showOCR ? '❌ Đóng' : '📷 Đọc hóa đơn'}
+          </button>
+        </div>
+        
+        {showOCR && (
+          <div className="ocr-content">
+            <ImageUpload 
+              onOCRResult={handleOCRResult}
+              disabled={loading}
+            />
+          </div>
+        )}
+      </div>
+
       <form onSubmit={handleSubmit}>
         <div className="form-row">
           <div className="form-group">

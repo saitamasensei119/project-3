@@ -364,3 +364,46 @@
   flex-direction: column;
   gap: 20px;
 }
+
+/* OCR Section */
+.ocr-section {
+  margin-bottom: 20px;
+}
+
+.ocr-toggle {
+  margin-bottom: 15px;
+}
+
+.ocr-toggle-btn {
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-weight: 500;
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ocr-toggle-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.ocr-toggle-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.ocr-content {
+  background: rgba(40, 167, 69, 0.04);
+  border: 1px solid rgba(40, 167, 69, 0.2);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 20px;
+}
